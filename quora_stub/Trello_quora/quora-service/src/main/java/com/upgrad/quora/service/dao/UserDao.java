@@ -53,4 +53,17 @@ public class UserDao {
         return userAuthTokenEntity;
     }
 
+    public UserAuthTokenEntity getUserAuthToken(final String accesstoken) {
+        try {
+            return entityManager.createNamedQuery("userAuthTokenByAccessToken", UserAuthTokenEntity.class)
+                    .setParameter("accesstoken", accesstoken).getSingleResult();
+        } catch (NoResultException nre) {
+            return null;
+        }
+    }
+
+    public void updateAuthTokenLogout(UserAuthTokenEntity userAuthTokenEntity) {
+        entityManager.merge(userAuthTokenEntity);
+    }
+
 }

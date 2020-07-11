@@ -4,6 +4,7 @@ import com.upgrad.quora.service.dao.UserDao;
 import com.upgrad.quora.service.entity.UserAuthTokenEntity;
 import com.upgrad.quora.service.entity.UserEntity;
 import com.upgrad.quora.service.exception.AuthenticationFailedException;
+import com.upgrad.quora.service.exception.SignOutRestrictedException;
 import com.upgrad.quora.service.exception.SignUpRestrictedException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -62,5 +63,17 @@ public class UserBusinessService {
         }else {
             throw new AuthenticationFailedException("ATH-002", "Password failed");
         }
+    }
+
+    @Transactional(propagation = Propagation.REQUIRED)
+    public UserAuthTokenEntity signout(final String accesstoken) throws SignOutRestrictedException {
+        UserAuthTokenEntity userAuthTokenEntity = userDao.getUserAuthToken(accesstoken);
+        if(userAuthTokenEntity==null) {
+            throw new SignOutRestrictedException("SGR-001", "User is not Signed in");
+        }
+        ZonedDateTime now = ZonedDateTime.now();
+        userAuthTokenEntity.setLogout_at(now);
+        userDao.updateAuthTokenLogout(userAuthTokenEntity);
+        return userAuthTokenEntity;
     }
 }
