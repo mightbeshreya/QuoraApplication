@@ -68,8 +68,19 @@ public class UserDao {
 
     public UserEntity getUserByUserID(final String userId) {
         try {
-            return entityManager.createNamedQuery("getUserById", UserEntity.class).setParameter("userId", userId)
+            return entityManager.createNamedQuery("getUserById", UserEntity.class)
+                    .setParameter("userId", userId).getSingleResult();
+        }catch(NoResultException nre) {
+            return null;
+        }
+    }
+
+    public String deleteUserByUserId(final String userId) {
+        try {
+            UserEntity userEntity = entityManager.createNamedQuery("getUserById", UserEntity.class).setParameter("userId", userId)
                     .getSingleResult();
+            entityManager.remove(userEntity);
+            return userEntity.getUuid();
         }catch(NoResultException nre) {
             return null;
         }
