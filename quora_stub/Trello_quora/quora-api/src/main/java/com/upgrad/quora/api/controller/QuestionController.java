@@ -1,8 +1,6 @@
 package com.upgrad.quora.api.controller;
 
-import com.upgrad.quora.api.model.QuestionDetailsResponse;
-import com.upgrad.quora.api.model.QuestionRequest;
-import com.upgrad.quora.api.model.QuestionResponse;
+import com.upgrad.quora.api.model.*;
 import com.upgrad.quora.service.business.QuestionBusinessService;
 import com.upgrad.quora.service.entity.QuestionEntity;
 import com.upgrad.quora.service.exception.AuthorizationFailedException;
@@ -49,7 +47,7 @@ public class QuestionController {
     public ResponseEntity<List<QuestionDetailsResponse>> getAllQuestions
             (@RequestHeader("authorization") final String authorization ) throws AuthorizationFailedException {
         List<QuestionEntity> listOfQuestions = questionBusinessService.getAllQuestions(authorization);
-        List<QuestionDetailsResponse> questionDetailsResponses = new LinkedList<>() ;
+        final List<QuestionDetailsResponse> questionDetailsResponses = new LinkedList<>() ;
 
         for(QuestionEntity q: listOfQuestions) {
             QuestionDetailsResponse questionDetailsResponse = new QuestionDetailsResponse();
@@ -59,4 +57,6 @@ public class QuestionController {
         }
         return new ResponseEntity<List<QuestionDetailsResponse>>(questionDetailsResponses, HttpStatus.OK);
     }
+    /*@RequestMapping(method = RequestMethod.PUT, path = "/question/edit/{questionId}", consumes = MediaType.APPLICATION_JSON_UTF8_VALUE, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    public ResponseEntity<QuestionEditResponse> editQuestionContent()*/
 }
